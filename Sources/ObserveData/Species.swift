@@ -18,7 +18,8 @@ public struct TaxonInfo: Codable, Equatable {
 @Model
 public final class Species: GridNavigable, Identifiable {
     public var id: UUID = UUID()
-    public var name: String = ""
+    public var name: String = "" // Latin/scientific name (immutable)
+    public var commonName: String? // Localized common name in selected language
     public var leafIndex: LeafIndex = 0
     public var taxonId: Int = 0
     @Relationship(deleteRule: .cascade, inverse: \PhotoObservation.species)
@@ -39,9 +40,10 @@ public final class Species: GridNavigable, Identifiable {
         }
     }
 
-    public init(leafIndex: LeafIndex = 0, name: String = "", taxonId: Int = 0, lineage: [TaxonInfo]? = nil) {
+    public init(leafIndex: LeafIndex = 0, name: String = "", commonName: String? = nil, taxonId: Int = 0, lineage: [TaxonInfo]? = nil) {
         self.id = UUID()
         self.name = name
+        self.commonName = commonName
         self.leafIndex = leafIndex
         self.taxonId = taxonId
         self.lineageData = try? JSONEncoder().encode(lineage)
