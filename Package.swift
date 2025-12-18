@@ -19,7 +19,7 @@ let package = Package(
     ],
     dependencies: [
 //        .package(path: "../GridNavigation")
-        .package(url: "https://github.com/jjnicolas/GridNavigation", branch: "main"),
+        .package(url: "https://github.com/jjnicolas/GridNavigation", .upToNextMajor(from: "1.0.0")),
 //        .package(url: "https://github.com/jjnicolas/GridNavigation", revision: "5d7116650646f42400425c3c309d5d9725cc128e"),
     ],
     targets: [
