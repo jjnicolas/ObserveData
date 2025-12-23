@@ -17,9 +17,9 @@ public final class TaxonCommonName {
         self.cachedAt = Date()
     }
 
-    // Check if cache is still valid (< 1 week old)
+    // Cache remains valid indefinitely until manually cleared or ML model changes
+    // No time-based expiration since common names and species rarely change
     public var isCacheValid: Bool {
-        let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
-        return cachedAt > oneWeekAgo
+        return true
     }
 }
