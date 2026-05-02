@@ -13,6 +13,13 @@ public final class PhotoObservation: GridNavigable, Identifiable {
     public var longitude: Double?
     public var elevation: Double? // Elevation in meters from photo EXIF or device
 
+    /// Seconds east of UTC for the photo's original capture timezone, when known.
+    /// `timestamp` is always an absolute UTC instant; this offset is used purely
+    /// for display so the photo shows at the same wall-clock time as in Photos.app
+    /// regardless of where the user currently is. `nil` for older rows imported
+    /// before the field existed — display falls back to the device's current zone.
+    public var timezoneOffsetSeconds: Int?
+
     // Full resolution photo data
     @Attribute(.externalStorage)
     public var photoData: Data?
@@ -29,7 +36,8 @@ public final class PhotoObservation: GridNavigable, Identifiable {
         photoData: Data? = Data(),
         thumbnailData: Data? = Data(),
         location: CLLocationCoordinate2D? = CLLocationCoordinate2D(latitude: 0, longitude: 0),
-        elevation: Double? = nil
+        elevation: Double? = nil,
+        timezoneOffsetSeconds: Int? = nil
     ) {
         self.id = id ?? UUID()
         self.timestamp = timestamp
@@ -40,5 +48,13 @@ public final class PhotoObservation: GridNavigable, Identifiable {
         self.latitude = location?.latitude
         self.longitude = location?.longitude
         self.elevation = elevation
+        self.timezoneOffsetSeconds = timezoneOffsetSeconds
+    }
+
+    /// TimeZone reconstructed from the stored offset, or nil when unknown
+    /// (display sites should fall back to `.current` in that case).
+    public var captureTimeZone: TimeZone? {
+        guard let timezoneOffsetSeconds else { return nil }
+        return TimeZone(secondsFromGMT: timezoneOffsetSeconds)
     }
 }
