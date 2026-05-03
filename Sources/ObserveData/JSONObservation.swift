@@ -7,6 +7,7 @@ struct JSONObservation: Codable, Sendable {
     let name: String
     let leafIndex: Int
     let locationData: LocationCoordinate?
+    let locationName: String?
     let imageBase64: String?
 }
 

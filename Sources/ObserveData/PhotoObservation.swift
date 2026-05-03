@@ -13,6 +13,13 @@ public final class PhotoObservation: GridNavigable, Identifiable {
     public var longitude: Double?
     public var elevation: Double? // Elevation in meters from photo EXIF or device
 
+    /// Human-readable place name resolved from `latitude`/`longitude` via reverse
+    /// geocoding (e.g. "San Diego Zoo Safari Park"). Lazily populated the first
+    /// time the detail view opens for an observation with coordinates; cleared
+    /// when coordinates change so it gets re-resolved. `nil` means "not yet
+    /// resolved" — never an empty string.
+    public var locationName: String?
+
     /// Seconds east of UTC for the photo's original capture timezone, when known.
     /// `timestamp` is always an absolute UTC instant; this offset is used purely
     /// for display so the photo shows at the same wall-clock time as in Photos.app
@@ -37,7 +44,8 @@ public final class PhotoObservation: GridNavigable, Identifiable {
         thumbnailData: Data? = Data(),
         location: CLLocationCoordinate2D? = CLLocationCoordinate2D(latitude: 0, longitude: 0),
         elevation: Double? = nil,
-        timezoneOffsetSeconds: Int? = nil
+        timezoneOffsetSeconds: Int? = nil,
+        locationName: String? = nil
     ) {
         self.id = id ?? UUID()
         self.timestamp = timestamp
@@ -49,6 +57,7 @@ public final class PhotoObservation: GridNavigable, Identifiable {
         self.longitude = location?.longitude
         self.elevation = elevation
         self.timezoneOffsetSeconds = timezoneOffsetSeconds
+        self.locationName = locationName
     }
 
     /// TimeZone reconstructed from the stored offset, or nil when unknown
